@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 final class CameraPreview {
+    private static final long LANDSCAPE_PREVIEW_PIXELS = 1920L * 1440L;
+
     interface Listener {
         void ready();
         void failed(String reason);
@@ -49,7 +51,8 @@ final class CameraPreview {
             size = sizes == null ? null : Arrays.stream(sizes)
                     .min(Comparator
                             .comparingDouble((Size s) -> Math.abs((double) s.getWidth() / s.getHeight() - 4d / 3d))
-                            .thenComparingLong(s -> Math.abs((long) s.getWidth() * s.getHeight() - 1228800)))
+                            .thenComparingLong(s -> Math.abs((long) s.getWidth() * s.getHeight()
+                                    - LANDSCAPE_PREVIEW_PIXELS)))
                     .orElse(null);
             float[] focal = info.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
             android.util.SizeF sensor = info.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
