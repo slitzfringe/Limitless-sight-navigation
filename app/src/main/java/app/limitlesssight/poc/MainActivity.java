@@ -91,11 +91,6 @@ public final class MainActivity extends Activity implements SensorEventListener,
         column.setOrientation(LinearLayout.VERTICAL);
         column.setPadding(dp(12), dp(6), dp(12), dp(6));
         controls.addView(column);
-        ImageView logo = new ImageView(this);
-        logo.setImageResource(R.drawable.limitless_sight_logo);
-        logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        logo.setContentDescription("Limitless Sight");
-        column.addView(logo, new LinearLayout.LayoutParams(-1, dp(74)));
         text(column, "STATIONARY BENCH TEST ONLY", 12).setTextColor(0xFFFFCF78);
         selector = new Spinner(this);
         column.addView(selector, new LinearLayout.LayoutParams(-1, dp(44)));
@@ -135,7 +130,7 @@ public final class MainActivity extends Activity implements SensorEventListener,
         replay = new ReplayView(this);
         replay.setVisibility(View.GONE);
         screen.addView(replay, new FrameLayout.LayoutParams(-1, -1));
-        int defaultRotation = "24053PY09I".equalsIgnoreCase(Build.MODEL) ? 270 : 0;
+        int defaultRotation = 0;
         camera = new CameraPreview(manager, texture, defaultRotation);
         diagnostics.event("preview_rotation_default offset_deg=" + defaultRotation);
         setContentView(root);

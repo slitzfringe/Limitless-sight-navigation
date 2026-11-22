@@ -22,10 +22,11 @@ this build.
    for each, facing the same detailed scene in unchanged light. Record any
    failed stream. The app compensates for landscape orientation automatically;
    if an OEM or physical lens reports incompatible metadata, tap **Rotate preview
-   90°** until the horizon is level. The detail score is scene dependent and is
-   not geometric calibration. The bench preview uses the largest practical 4:3
-   stream and fits the complete frame; black bars are expected when preserving
-   the full field of view in the landscape preview area.
+   90°** until the horizon is level. The Xiaomi 14 Civi defaults to its wide
+   landscape orientation. The detail score is scene dependent and is not
+   geometric calibration. The bench preview targets a 1920×1440 4:3 stream and
+   fits the complete frame; narrow side bars are expected because filling a
+   wider screen would crop the sensor image and reduce field of view.
 4. Open **Simulated route**, cycle through the manoeuvres, enable **Simulate
    low confidence**, and check that all road chevrons disappear while the top
    pointer remains. Restore confidence, then return to the camera. Never use
