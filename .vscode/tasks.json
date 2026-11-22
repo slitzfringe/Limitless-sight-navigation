@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Limitless Sight debug APK",
+			"type": "shell",
+			"options": {
+				"shell": {
+					"executable": "powershell.exe",
+					"args": ["-NoProfile", "-Command"]
+				}
+			},
+			"command": "$env:JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot'; $env:ANDROID_HOME = \"$env:LOCALAPPDATA\\Android\\Sdk\"; & \"$env:LOCALAPPDATA\\Android\\gradle-8.11.1\\bin\\gradle.bat\" --no-daemon :app:assembleDebug :app:lintDebug; exit $LASTEXITCODE",
+			"group": "build"
+		}
+	]
+}

@@ -1,0 +1,67 @@
+{
+  "aihm_version": "0.1.dev1+gbb8501698",
+  "model_id": "ffnet_78s_lowres",
+  "model_name": "FFNet-78S-LowRes",
+  "runtime": "RUNTIME_TFLITE",
+  "precision": "PRECISION_W8A8",
+  "tool_versions": {
+    "qairt": "2.51.0.260929181845",
+    "litert": "1.4.2"
+  },
+  "model_files": [
+    {
+      "filename": "ffnet_78s_lowres.tflite",
+      "inputs": [
+        {
+          "name": "image",
+          "shape": [
+            1,
+            512,
+            1024,
+            3
+          ],
+          "dtype": "DTYPE_UINT8",
+          "quantization_parameters": {
+            "scale": 0.003920366987586021
+          },
+          "value_range": {
+            "double_r": {
+              "min": 0.0,
+              "max": 1.0
+            }
+          },
+          "io_type": "IO_TYPE_IMAGE",
+          "image_metadata": {
+            "color_format": "COLOR_FORMAT_RGB"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "shape": [
+            1,
+            128,
+            256,
+            19
+          ],
+          "dtype": "DTYPE_UINT8",
+          "quantization_parameters": {
+            "scale": 0.22214241325855255,
+            "zero_point": 165
+          },
+          "description": "Semantic segmentation mask",
+          "io_type": "IO_TYPE_TENSOR",
+          "labels_file": "cityscapes_labels.txt"
+        }
+      ]
+    }
+  ],
+  "supplementary_files": [
+    {
+      "filename": "labels.txt",
+      "description": "Mapping of model prediction indices -> string labels."
+    }
+  ],
+  "use_case": "MODEL_USE_CASE_SEMANTIC_SEGMENTATION"
+}
