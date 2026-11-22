@@ -22,7 +22,9 @@ Limitless Sight is an Android AR road-navigation POC for a future wearable displ
 4. LiteRT 1.4.2 attempts NNAPI first and explicitly falls back to CPU if initialization fails.
 5. Cityscapes class `0` is extracted as a road mask.
 6. Bottom-connected filtering, confidence scoring, and hysteresis produce a visible road region.
-7. `RoadOverlayView` draws the region and simulated straight chevrons.
+7. `RoadOverlayView` retains the detected region for diagnostics, derives a
+   conservative center-biased ego-corridor candidate inside it, and draws
+   simulated straight chevrons only within that candidate.
 8. A future navigation-provider adapter will supply route intent independently from perception and rendering.
 
 ## Known facts and constraints
@@ -34,6 +36,8 @@ Limitless Sight is an Android AR road-navigation POC for a future wearable displ
 - Cityscapes does not adequately represent Bengaluru roads; false road classifications have been observed.
 - Routing, destination search, GPS progress, road-plane projection, and route-aware chevrons are not implemented.
 - Provider credentials must never be committed.
+- The ego-corridor candidate is a rendering heuristic only; it is not lane
+  detection, route guidance, or a safety gate.
 
 ## Validation workflow
 

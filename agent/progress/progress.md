@@ -16,6 +16,7 @@ Last updated: 2026-11-22
 | 2026-11-22 | Corrected the preview to use an upright wide landscape transform, raised the target stream to 1920×1440, and removed the in-app logo. |
 | 2026-11-22 | Passed Android build and lint, installed the update, and verified Camera 3 at 1920×1440 with first-frame delivery on the Xiaomi. |
 | 2026-11-22 | Added repository and agent-state documentation. |
+| 2026-11-22 | Added a conservative center-biased ego-corridor candidate inside the detected road region; guidance remains explicitly simulated. |
 
 ## Pending
 

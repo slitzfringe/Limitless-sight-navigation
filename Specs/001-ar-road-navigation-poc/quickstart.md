@@ -33,8 +33,10 @@ this build.
    the build to navigate or while controlling a vehicle.
 5. Tap **Start live road detection** while stationary. The current bench slice
    uses the bundled quantized FFNet-78S-LowRes Cityscapes segmentation model on
-   live camera frames. It draws simulated straight chevrons only when road-region
-   confidence is sustained; these chevrons are not connected to a navigation
+   live camera frames. It retains the detected region for diagnostics, then
+   draws simulated straight chevrons only inside a conservative center-biased
+   ego-corridor candidate when road-region confidence is sustained. This is
+   not lane detection and the chevrons are not connected to a navigation
    provider. The model and its Qualcomm license are under
    `app/src/main/assets/models/ffnet_78s_lowres/`; evaluate dataset/model terms
    before any commercial release.

@@ -19,6 +19,8 @@ final class RoadOverlayView extends View {
     private final int[] queue = new int[W * H];
     private final int[] left = new int[H];
     private final int[] right = new int[H];
+    private final int[] corridorLeft = new int[H];
+    private final int[] corridorRight = new int[H];
     private float confidence;
     private boolean roadVisible;
     private int confidentFrames, uncertainFrames;
@@ -26,7 +28,7 @@ final class RoadOverlayView extends View {
 
     RoadOverlayView(Context context) {
         super(context);
-        setContentDescription("Experimental live road-region overlay with simulated straight guidance.");
+        setContentDescription("Experimental live road-region overlay with a conservative simulated ego-road corridor.");
     }
 
     float confidence() {
@@ -133,6 +135,18 @@ final class RoadOverlayView extends View {
             }
             if (right[y] - left[y] >= 5) rows++;
         }
+        for (int y = H / 3; y < H; y++) {
+            if (right[y] < left[y]) {
+                corridorLeft[y] = W;
+                corridorRight[y] = -1;
+                continue;
+            }
+            float detectedCenter = (left[y] + right[y]) * .5f;
+            float center = detectedCenter * .75f + (W - 1) * .5f * .25f;
+            int halfWidth = Math.max(3, Math.round((right[y] - left[y] + 1) * .28f));
+            corridorLeft[y] = Math.max(left[y], Math.round(center) - halfWidth);
+            corridorRight[y] = Math.min(right[y], Math.round(center) + halfWidth);
+        }
         float areaRatio = area / (float) (W * H * 2 / 3);
         float rowRatio = rows / (float) (H * 2 / 3);
         confidence = Math.min(1f, areaRatio * 2.4f) * Math.min(1f, rowRatio * 1.35f);
@@ -160,8 +174,8 @@ final class RoadOverlayView extends View {
         super.onDraw(canvas);
         paint.setTextSize(16 * getResources().getDisplayMetrics().scaledDensity);
         paint.setColor(0xFFFFCF78);
-        canvas.drawText(modelDriven ? "LIVE FFNET ROAD ML · ROUTE SIMULATED"
-                : "LIVE VISION POC · ROUTE SIMULATED", 18, 28, paint);
+        canvas.drawText(modelDriven ? "LIVE FFNET ROAD ML · EGO CORRIDOR CANDIDATE"
+                : "LIVE VISION POC · EGO CORRIDOR CANDIDATE", 18, 28, paint);
         if (!roadVisible) {
             paint.setColor(Color.WHITE);
             canvas.drawText("Road region uncertain — overlay hidden", 18, 56, paint);
@@ -194,13 +208,38 @@ final class RoadOverlayView extends View {
         canvas.drawPath(road, paint);
         paint.setStyle(Paint.Style.FILL);
 
+        Path corridor = new Path();
+        boolean corridorStarted = false;
+        for (int y = H - 1; y >= H / 3; y--) {
+            if (corridorRight[y] < corridorLeft[y]) continue;
+            float x = corridorLeft[y] * sx, py = y * sy;
+            if (!corridorStarted) {
+                corridor.moveTo(x, py);
+                corridorStarted = true;
+            } else {
+                corridor.lineTo(x, py);
+            }
+        }
+        for (int y = H / 3; y < H; y++) {
+            if (corridorRight[y] < corridorLeft[y]) continue;
+            corridor.lineTo((corridorRight[y] + 1) * sx, y * sy);
+        }
+        corridor.close();
+        paint.setColor(0x4058A6FF);
+        canvas.drawPath(corridor, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        paint.setColor(0xD058A6FF);
+        canvas.drawPath(corridor, paint);
+        paint.setStyle(Paint.Style.FILL);
+
         float phase = ((SystemClock.elapsedRealtime() % 1200) / 1200f);
         for (int i = 0; i < 5; i++) {
             int y = Math.min(H - 6, Math.max(H / 3, H - 13 - Math.round((i + phase) * 10)));
-            while (y < H - 1 && right[y] < left[y]) y++;
-            if (right[y] < left[y]) continue;
-            float x = (left[y] + right[y]) * .5f * sx;
-            float radius = Math.max(7, (right[y] - left[y]) * sx * .09f);
+            while (y < H - 1 && corridorRight[y] < corridorLeft[y]) y++;
+            if (corridorRight[y] < corridorLeft[y]) continue;
+            float x = (corridorLeft[y] + corridorRight[y]) * .5f * sx;
+            float radius = Math.max(7, (corridorRight[y] - corridorLeft[y]) * sx * .16f);
             drawChevron(canvas, x, y * sy, radius);
         }
         postInvalidateDelayed(33);
